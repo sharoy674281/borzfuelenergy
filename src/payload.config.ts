@@ -29,7 +29,7 @@ export default buildConfig({
   collections: [Users, Media, Products, Pages, Ingredients, Benefits],
   globals: [Header, Footer],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || process.env.NEXT_PUBLIC_PAYLOAD_SECRET || 'fallback-secret-key-for-development-only',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
