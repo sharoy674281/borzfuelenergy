@@ -14,17 +14,15 @@ export default function OrdersPage() {
       items: [
         { name: 'BorzFuel Energy Booster', quantity: 2 },
         { name: 'BorzFuel Pre-Workout', quantity: 1 },
-      ]
+      ],
     },
     {
-      id: '1002', 
+      id: '1002',
       date: '2024-12-10',
       status: 'shipped',
       total: 899,
-      items: [
-        { name: 'BorzFuel Recovery Formula', quantity: 1 },
-      ]
-    }
+      items: [{ name: 'BorzFuel Recovery Formula', quantity: 1 }],
+    },
   ]
 
   const getStatusColor = (status: string) => {
@@ -81,17 +79,17 @@ export default function OrdersPage() {
             <div key={order.id} className="bg-gray-700 rounded-lg p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-medium text-white">
-                    Order #{order.id}
-                  </h3>
+                  <h3 className="text-lg font-medium text-white">Order #{order.id}</h3>
                   <div className="flex items-center space-x-2 text-sm text-gray-400 mt-1">
                     <Calendar className="w-4 h-4" />
                     <span>{new Date(order.date).toLocaleDateString()}</span>
                   </div>
                 </div>
-                
+
                 <div className="text-right">
-                  <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-lg border text-sm ${getStatusColor(order.status)}`}>
+                  <div
+                    className={`inline-flex items-center space-x-2 px-3 py-1 rounded-lg border text-sm ${getStatusColor(order.status)}`}
+                  >
                     {getStatusIcon(order.status)}
                     <span className="capitalize">{order.status}</span>
                   </div>
@@ -115,13 +113,9 @@ export default function OrdersPage() {
               </div>
 
               <div className="flex items-center space-x-4 mt-4 pt-4 border-t border-gray-600">
-                <button className="text-blue-400 hover:text-blue-300 text-sm">
-                  View Details
-                </button>
+                <button className="text-blue-400 hover:text-blue-300 text-sm">View Details</button>
                 {order.status === 'delivered' && (
-                  <button className="text-blue-400 hover:text-blue-300 text-sm">
-                    Reorder
-                  </button>
+                  <button className="text-blue-400 hover:text-blue-300 text-sm">Reorder</button>
                 )}
                 {order.status === 'shipped' && (
                   <button className="text-blue-400 hover:text-blue-300 text-sm">

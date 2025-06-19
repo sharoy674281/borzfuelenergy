@@ -102,7 +102,8 @@ export function Header() {
                         <p className="text-white font-medium">{customer?.email}</p>
                       </div>
                       <div className="py-2">
-                        {' '}                        <button
+                        {' '}
+                        <button
                           className="w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-800 transition-colors flex items-center space-x-2"
                           onClick={() => {
                             console.log('🔧 Profile clicked - redirecting to /account')

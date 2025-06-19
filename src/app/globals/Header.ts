@@ -1,4 +1,4 @@
-import { GlobalConfig } from "payload"
+import { GlobalConfig } from 'payload'
 
 export const Header: GlobalConfig = {
   slug: 'header',
@@ -72,4 +72,3 @@ export const Header: GlobalConfig = {
     },
   ],
 }
-

@@ -8,11 +8,7 @@ import { User, Package, MapPin, Settings, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-export default function AccountLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function AccountLayout({ children }: { children: React.ReactNode }) {
   const { customer, isLoading, logout } = useCustomerAuth()
   const router = useRouter()
   const pathname = usePathname()
@@ -101,9 +97,7 @@ export default function AccountLayout({
 
           {/* Main content */}
           <div className="md:col-span-3">
-            <div className="bg-gray-800 rounded-lg p-6">
-              {children}
-            </div>
+            <div className="bg-gray-800 rounded-lg p-6">{children}</div>
           </div>
         </div>
       </div>

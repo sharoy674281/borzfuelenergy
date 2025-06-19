@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
     // Get user info from cookies (Payload stores auth in cookies)
     const cookies = request.cookies
     const payloadToken = cookies.get('payload-token')
-    
+
     // If no auth token, let Payload handle the redirect to login
     if (!payloadToken) {
       return NextResponse.next()
@@ -22,5 +22,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*']
+  matcher: ['/admin/:path*'],
 }

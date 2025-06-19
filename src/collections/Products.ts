@@ -8,7 +8,7 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: 'name', // Bruker 'name' som tittel i lister
     description: 'Administrer alle produkter - Admin only',
-    defaultColumns: ['name', "price", "status", "createdAt"],// Kolonner i liste-view
+    defaultColumns: ['name', 'price', 'status', 'createdAt'], // Kolonner i liste-view
     group: 'Shop', // Grupperer i sidebar
     // Hide from customers
     hidden: ({ user }) => (user as any)?.role !== 'admin',
@@ -216,5 +216,3 @@ export const Products: CollectionConfig = {
     ],
   },
 }
-
-

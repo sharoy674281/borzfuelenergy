@@ -241,7 +241,12 @@ export const Users: CollectionConfig = {
         }
 
         // Prevent accidentally changing admin users to customer
-        if (operation === 'update' && req.user && (req.user as any).role !== 'admin' && data.role === 'admin') {
+        if (
+          operation === 'update' &&
+          req.user &&
+          (req.user as any).role !== 'admin' &&
+          data.role === 'admin'
+        ) {
           // Only admins can create/update admin users (except first user)
           if ((req.user as any).id !== '1' && (req.user as any).id !== 1) {
             throw new Error('Only administrators can modify admin users')

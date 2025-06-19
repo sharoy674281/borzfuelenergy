@@ -9,7 +9,7 @@ export default function AccountPage() {
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
-  
+
   const [formData, setFormData] = useState({
     firstName: customer?.firstName || '',
     lastName: customer?.lastName || '',
@@ -68,11 +68,13 @@ export default function AccountPage() {
       </div>
 
       {message && (
-        <div className={`mb-4 p-3 rounded-lg ${
-          message.includes('success') 
-            ? 'bg-green-600/20 text-green-400 border border-green-600' 
-            : 'bg-red-600/20 text-red-400 border border-red-600'
-        }`}>
+        <div
+          className={`mb-4 p-3 rounded-lg ${
+            message.includes('success')
+              ? 'bg-green-600/20 text-green-400 border border-green-600'
+              : 'bg-red-600/20 text-red-400 border border-red-600'
+          }`}
+        >
           <div className="flex items-center space-x-2">
             {message.includes('success') && <Check className="w-4 h-4" />}
             <span>{message}</span>
@@ -82,9 +84,7 @@ export default function AccountPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            First Name
-          </label>
+          <label className="block text-sm font-medium text-gray-300 mb-2">First Name</label>
           <div className="relative">
             <User className="absolute left-3 top-3 text-gray-400" size={18} />
             <input
@@ -93,8 +93,8 @@ export default function AccountPage() {
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
               disabled={!isEditing}
               className={`w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 ${
-                isEditing 
-                  ? 'focus:outline-none focus:border-blue-500' 
+                isEditing
+                  ? 'focus:outline-none focus:border-blue-500'
                   : 'cursor-not-allowed opacity-75'
               }`}
               placeholder="John"
@@ -103,9 +103,7 @@ export default function AccountPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            Last Name
-          </label>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
           <div className="relative">
             <User className="absolute left-3 top-3 text-gray-400" size={18} />
             <input
@@ -114,8 +112,8 @@ export default function AccountPage() {
               onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
               disabled={!isEditing}
               className={`w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 ${
-                isEditing 
-                  ? 'focus:outline-none focus:border-blue-500' 
+                isEditing
+                  ? 'focus:outline-none focus:border-blue-500'
                   : 'cursor-not-allowed opacity-75'
               }`}
               placeholder="Doe"
@@ -124,9 +122,7 @@ export default function AccountPage() {
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            Email Address
-          </label>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
           <div className="relative">
             <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
             <input
@@ -185,11 +181,13 @@ export default function AccountPage() {
         <h3 className="text-lg font-medium text-white mb-2">Account Status</h3>
         <div className="flex items-center space-x-4 text-sm">
           <span className="text-gray-400">Status:</span>
-          <span className={`px-2 py-1 rounded ${
-            customer.customerStatus === 'active' 
-              ? 'bg-green-600/20 text-green-400' 
-              : 'bg-yellow-600/20 text-yellow-400'
-          }`}>
+          <span
+            className={`px-2 py-1 rounded ${
+              customer.customerStatus === 'active'
+                ? 'bg-green-600/20 text-green-400'
+                : 'bg-yellow-600/20 text-yellow-400'
+            }`}
+          >
             {customer.customerStatus || 'Active'}
           </span>
         </div>
