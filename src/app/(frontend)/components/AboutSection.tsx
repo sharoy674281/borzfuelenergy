@@ -32,11 +32,11 @@ export function AboutSection() {
                 We created BorzFuel with a simple mission: develop the most effective, transparent,
                 and powerful pre-workout on the market. No compromises. No shortcuts. Just pure,
                 savage performance.
-              </p>
+              </p>{' '}
               <p className="text-gray-300 text-base sm:text-lg text-center md:text-left leading-relaxed">
-                <span className="text-blue-400 font-bold">"Borz"</span> – the Chechen word for wolf
-                – embodies everything we stand for: strength, pack mentality, and relentless pursuit
-                of goals.
+                <span className="text-blue-400 font-bold">&ldquo;Borz&rdquo;</span> – the Chechen
+                word for wolf – embodies everything we stand for: strength, pack mentality, and
+                relentless pursuit of goals.
               </p>
               <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-lg border border-gray-700 mt-8">
                 <p className="font-bold text-lg sm:text-xl text-center md:text-left text-white">

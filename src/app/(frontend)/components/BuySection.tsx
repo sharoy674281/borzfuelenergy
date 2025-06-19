@@ -11,7 +11,7 @@ interface BuySectionProps {
 
 export function BuySection({ product }: BuySectionProps) {
   const [quantity, setQuantity] = useState(1)
-  const { addToCart, toggleCart } = useCart()
+  const { addToCart } = useCart()
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1)
   const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))

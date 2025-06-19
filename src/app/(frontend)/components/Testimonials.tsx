@@ -42,11 +42,12 @@ export function Testimonials() {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            {' '}
             THE PACK{' '}
             <span className="bg-gradient-to-r from-blue-400 to-blue-600 text-transparent bg-clip-text">
-              DOESN'T LIE
+              DOESN&apos;T LIE
             </span>
-          </h2>
+          </h2>{' '}
           <p className="text-gray-400 max-w-3xl mx-auto text-lg leading-relaxed">
             Join the elite athletes who have unleashed their inner Borz. Real results from real
             warriors.
@@ -75,13 +76,11 @@ export function Testimonials() {
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} size={18} fill="#3b82f6" color="#3b82f6" className="mr-1" />
                   ))}
-                </div>
-
+                </div>{' '}
                 {/* Quote */}
                 <p className="text-gray-200 italic mb-8 text-lg leading-relaxed">
-                  "{testimonial.quote}"
+                  &ldquo;{testimonial.quote}&rdquo;
                 </p>
-
                 {/* Profile */}
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gray-700 rounded-full mr-4 flex items-center justify-center">

@@ -8,11 +8,9 @@ interface HeroSectionProps {
 
 export function HeroSection({ product }: HeroSectionProps) {
   // Fallback hvis ingen produktdata
-  const productImage = product?.image?.url
-   || '/pwo mock eks bilde.png'
-   console.log(productImage);
+  const productImage = product?.image?.url || '/pwo mock eks bilde.png'
+  console.log(productImage)
   const productImageAlt = product?.image?.alt || 'BorzFuel Pre-Workout Supplement'
-  const productName = product?.name || 'BORZFUEL'
 
   return (
     <section
@@ -21,11 +19,7 @@ export function HeroSection({ product }: HeroSectionProps) {
     >
       {/* Lightning Pattern Background */}
       <div className="absolute inset-0 opacity-25 pointer-events-none">
-        <svg
-          className="w-full h-full"
-          viewBox="0 0 200 100"
-          preserveAspectRatio="none"
-        >
+        <svg className="w-full h-full" viewBox="0 0 200 100" preserveAspectRatio="none">
           <defs>
             <linearGradient id="bolt-gradient" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stopColor="#fff" />
@@ -33,10 +27,10 @@ export function HeroSection({ product }: HeroSectionProps) {
               <stop offset="100%" stopColor="#2563eb" />
             </linearGradient>
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
@@ -89,11 +83,7 @@ export function HeroSection({ product }: HeroSectionProps) {
 
       {/* Wolf Claw Marks Effect */}
       <div className="absolute top-0 right-0 w-1/3 h-full opacity-30 pointer-events-none">
-        <svg
-          className="w-full h-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
+        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
             <linearGradient id="claw1" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#fff" />
@@ -109,10 +99,10 @@ export function HeroSection({ product }: HeroSectionProps) {
               <stop offset="100%" stopColor="#2563eb" />
             </linearGradient>
             <filter id="claw-glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
@@ -162,9 +152,8 @@ export function HeroSection({ product }: HeroSectionProps) {
                 IN YOU
               </h1>
               <p className="text-gray-400 text-lg mb-8 max-w-lg">
-                Dominate your workouts with the most powerful pre-workout
-                formula designed for peak performance, extreme focus and savage
-                intensity.
+                Dominate your workouts with the most powerful pre-workout formula designed for peak
+                performance, extreme focus and savage intensity.
               </p>
             </div>
 
@@ -176,7 +165,7 @@ export function HeroSection({ product }: HeroSectionProps) {
                     className="w-[80%] h-[80%] rounded-full blur-2xl opacity-60"
                     style={{
                       background: 'radial-gradient(circle at 60% 40%, #181f2f 60%, #1e293b 100%)',
-                      boxShadow: '0 0 80px 20px #1e40af, 0 0 0 0 #000'
+                      boxShadow: '0 0 80px 20px #1e40af, 0 0 0 0 #000',
                     }}
                   />
                 </div>
@@ -207,7 +196,7 @@ export function HeroSection({ product }: HeroSectionProps) {
                 INGREDIENTS
               </a>
             </div>
-            
+
             <div className="mt-8 flex items-center">
               <div className="flex -space-x-2">
                 {[1, 2, 3].map((i) => (
@@ -231,7 +220,7 @@ export function HeroSection({ product }: HeroSectionProps) {
                 className="w-[80%] h-[80%] rounded-full blur-2xl opacity-60"
                 style={{
                   background: 'radial-gradient(circle at 60% 40%, #181f2f 60%, #1e293b 100%)',
-                  boxShadow: '0 0 80px 20px #1e40af, 0 0 0 0 #000'
+                  boxShadow: '0 0 80px 20px #1e40af, 0 0 0 0 #000',
                 }}
               />
             </div>

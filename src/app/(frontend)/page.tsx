@@ -1,11 +1,12 @@
 // BorzFuel Homepage - App Router version
 
 // Import API utilities
-import { getProducts, getBenefits, getIngredients, Product, Benefit, Ingredient } from './lib/api'
+import { getProducts, getBenefits, getIngredients } from './lib/api'
 
 // Import komponenter (du må lage/flytte disse)
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
+import Link from 'next/link'
 import { HeroSection } from './components/HeroSection'
 import { BuySection } from './components/BuySection'
 import { ProductBenefits } from './components/ProductBenefits'
@@ -13,7 +14,6 @@ import { Ingredients } from './components/Ingredients'
 import { Testimonials } from './components/Testimonials'
 import { AboutSection } from './components/AboutSection'
 import { CartSidebar } from './components/CartSidebar'
-import { LoginModal } from './components/LoginModal'
 
 export default async function HomePage() {
   // I App Router kan vi fetch direkte i server component
@@ -62,12 +62,12 @@ export default async function HomePage() {
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">BorzFuel</h1>
           <p className="text-gray-400 mb-8">Loading content...</p>
-          <a
+          <Link
             href="/admin"
             className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold transition-colors"
           >
             Go to Admin Panel
-          </a>
+          </Link>
         </div>
       </div>
     )

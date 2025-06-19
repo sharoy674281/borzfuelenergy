@@ -1,5 +1,4 @@
-import { Product } from '@/payload-types'
-import { CollectionConfig, PayloadRequest } from 'payload'
+import { CollectionConfig } from 'payload'
 
 export const Products: CollectionConfig = {
   // 'slug' er URL-navnet for collection. API vil være /api/products

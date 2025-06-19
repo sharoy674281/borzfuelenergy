@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 import { Package, Calendar, CreditCard, Truck } from 'lucide-react'
 
 export default function OrdersPage() {
@@ -65,13 +66,13 @@ export default function OrdersPage() {
           <h3 className="text-lg font-medium text-white mb-2">No orders yet</h3>
           <p className="text-gray-400 mb-6">
             When you place your first order, it will appear here.
-          </p>
-          <a
+          </p>{' '}
+          <Link
             href="/"
             className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors inline-block"
           >
             Start Shopping
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">

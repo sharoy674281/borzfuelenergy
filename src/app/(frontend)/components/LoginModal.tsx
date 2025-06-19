@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { X, Mail, Lock, User } from 'lucide-react'
+import { X, Mail, Lock } from 'lucide-react'
 import { useCustomerAuth } from '../context/CustomerAuthContext'
 
 interface LoginModalProps {
