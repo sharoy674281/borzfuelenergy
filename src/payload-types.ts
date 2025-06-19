@@ -6,23 +6,107 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones =
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
   };
+  blocks: {};
   collections: {
     users: User;
     media: Media;
+    products: Product;
+    pages: Page;
+    ingredients: Ingredient;
+    benefits: Benefit;
+    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  db: {
-    defaultIDType: string;
+  collectionsJoins: {};
+  collectionsSelect: {
+    users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    ingredients: IngredientsSelect<false> | IngredientsSelect<true>;
+    benefits: BenefitsSelect<false> | BenefitsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
-  globals: {};
+  db: {
+    defaultIDType: number;
+  };
+  globals: {
+    header: Header;
+    footer: Footer;
+  };
+  globalsSelect: {
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
+  };
+  jobs: {
+    tasks: unknown;
+    workflows: unknown;
   };
 }
 export interface UserAuthOperations {
@@ -44,11 +128,44 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Admin users only - customers use /account
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
+  /**
+   * User role determines access level
+   */
+  role: 'admin' | 'customer';
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  shippingAddress?: {
+    street?: string | null;
+    city?: string | null;
+    postalCode?: string | null;
+    country?: ('NO' | 'SE' | 'DK' | 'FI') | null;
+  };
+  /**
+   * Leave empty to use shipping address for billing
+   */
+  billingAddress?: {
+    street?: string | null;
+    city?: string | null;
+    postalCode?: string | null;
+    country?: ('NO' | 'SE' | 'DK' | 'FI') | null;
+  };
+  /**
+   * Customer agrees to receive marketing emails
+   */
+  marketingConsent?: boolean | null;
+  /**
+   * For age verification (18+ required for supplements)
+   */
+  dateOfBirth?: string | null;
+  customerStatus?: ('active' | 'inactive' | 'banned') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -65,7 +182,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -80,14 +197,338 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Administrer alle produkter - Admin only
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  name: string;
+  /**
+   * URL-vennlig versjon (auto-genereres fra navn)
+   */
+  slug?: string | null;
+  /**
+   * Hovedpris i USD
+   */
+  price: number;
+  /**
+   * Original pris (for å vise rabatt)
+   */
+  compareAtPrice?: number | null;
+  /**
+   * Kort beskrivelse som vises på produktkort
+   */
+  shortDescription?: string | null;
+  /**
+   * Detaljert produktbeskrivelse
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Gjennomsnittlig rating (0-5 stjerner)
+   */
+  rating?: number | null;
+  /**
+   * Antall kundeomtaler
+   */
+  reviewCount?: number | null;
+  /**
+   * Badge som vises på produktet
+   */
+  badge?: ('best-seller' | 'new-formula' | 'limited' | 'none') | null;
+  status?: ('draft' | 'published' | 'archived') | null;
+  /**
+   * Er produktet på lager?
+   */
+  inStock?: boolean | null;
+  /**
+   * Antall på lager
+   */
+  inventory?: number | null;
+  /**
+   * Produktegenskaper som "Free shipping", "30-day guarantee"
+   */
+  features?:
+    | {
+        icon?: ('truck' | 'shield' | 'clock' | 'award') | null;
+        text: string;
+        color?: ('green' | 'blue' | 'yellow' | 'red') | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Bygg sider med drag & drop blokker - Admin only
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * URL for siden (auto-genereres fra tittel)
+   */
+  slug?: string | null;
+  status?: ('draft' | 'published') | null;
+  /**
+   * Bygg siden din ved å legge til og organisere blokker
+   */
+  layout?:
+    | (
+        | {
+            mainTitle: string;
+            subtitle?: string | null;
+            /**
+             * Hovedproduktbilde i hero
+             */
+            productImage?: (number | null) | Media;
+            ctaText?: string | null;
+            ctaLink?: string | null;
+            /**
+             * Vis "Trusted by 1000+ Athletes"?
+             */
+            showTrustedBy?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            /**
+             * Hvilket produkt skal vises i denne seksjonen?
+             */
+            featuredProduct: number | Product;
+            /**
+             * Vis "LIMITED TIME OFFER" boks?
+             */
+            showOffer?: boolean | null;
+            offerText?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productShowcase';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            /**
+             * Velg hvilke benefits som skal vises
+             */
+            selectedBenefits?: (number | Benefit)[] | null;
+            layout?: ('grid-4' | 'grid-3' | 'grid-2') | null;
+            /**
+             * Vis "CLAIM YOUR POWER" knapp?
+             */
+            showCta?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'benefits';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            /**
+             * Velg hvilke ingredienser som skal vises
+             */
+            selectedIngredients?: (number | Ingredient)[] | null;
+            /**
+             * Vis features grid (Clinical Doses, Third-Party Tested, osv.)?
+             */
+            showFeatures?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'ingredients';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            /**
+             * Vis statistikk (4.9 rating, 500+ reviews, osv.)?
+             */
+            showStats?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            title?: string | null;
+            description?: string | null;
+            placeholder?: string | null;
+            buttonText?: string | null;
+            backgroundStyle?: ('gradient' | 'solid' | 'image') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'newsletter';
+          }
+      )[]
+    | null;
+  /**
+   * SEO innstillinger for denne siden
+   */
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Produktfordeler som vises på produktsiden
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "benefits".
+ */
+export interface Benefit {
+  id: number;
+  title: string;
+  description: string;
+  /**
+   * Nøkkelinformasjon som fremheves
+   */
+  highlight?: string | null;
+  /**
+   * Ikon som vises med fordelen
+   */
+  icon: 'zap' | 'target' | 'battery' | 'brain' | 'shield' | 'award';
+  /**
+   * Hvilke produkter har denne fordelen
+   */
+  product?: (number | Product)[] | null;
+  /**
+   * Rekkefølge fordelen skal vises
+   */
+  order?: number | null;
+  /**
+   * Fremhev denne fordelen
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Administrer ingredienser og deres fordeler
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ingredients".
+ */
+export interface Ingredient {
+  id: number;
+  name: string;
+  /**
+   * Mengde per serving (inkluder enhet som mg, g, osv.)
+   */
+  amount: string;
+  /**
+   * Hva denne ingrediensen gjør
+   */
+  benefit: string;
+  /**
+   * Hvilken type fordel denne ingrediensen gir
+   */
+  category: 'pump' | 'endurance' | 'energy' | 'focus' | 'cognitive' | 'strength';
+  /**
+   * Hvilke produkter inneholder denne ingrediensen
+   */
+  product?: (number | Product)[] | null;
+  /**
+   * Rekkefølge ingrediensen skal vises (lavest nummer først)
+   */
+  order?: number | null;
+  /**
+   * Detaljert beskrivelse av ingrediensen (valgfritt)
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Er dette en klinisk dosering?
+   */
+  clinicalDose?: boolean | null;
+  /**
+   * Fremhev denne ingrediensen
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents".
+ */
+export interface PayloadLockedDocument {
+  id: number;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'ingredients';
+        value: number | Ingredient;
+      } | null)
+    | ({
+        relationTo: 'benefits';
+        value: number | Benefit;
+      } | null);
+  globalSlug?: string | null;
+  user: {
+    relationTo: 'users';
+    value: number | User;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -107,11 +548,411 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  firstName?: T;
+  lastName?: T;
+  phone?: T;
+  shippingAddress?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  billingAddress?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  marketingConsent?: T;
+  dateOfBirth?: T;
+  customerStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  price?: T;
+  compareAtPrice?: T;
+  shortDescription?: T;
+  description?: T;
+  rating?: T;
+  reviewCount?: T;
+  badge?: T;
+  status?: T;
+  inStock?: T;
+  inventory?: T;
+  features?:
+    | T
+    | {
+        icon?: T;
+        text?: T;
+        color?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              mainTitle?: T;
+              subtitle?: T;
+              productImage?: T;
+              ctaText?: T;
+              ctaLink?: T;
+              showTrustedBy?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productShowcase?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              featuredProduct?: T;
+              showOffer?: T;
+              offerText?: T;
+              id?: T;
+              blockName?: T;
+            };
+        benefits?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              selectedBenefits?: T;
+              layout?: T;
+              showCta?: T;
+              id?: T;
+              blockName?: T;
+            };
+        ingredients?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              selectedIngredients?: T;
+              showFeatures?: T;
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              showStats?: T;
+              id?: T;
+              blockName?: T;
+            };
+        newsletter?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              placeholder?: T;
+              buttonText?: T;
+              backgroundStyle?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ingredients_select".
+ */
+export interface IngredientsSelect<T extends boolean = true> {
+  name?: T;
+  amount?: T;
+  benefit?: T;
+  category?: T;
+  product?: T;
+  order?: T;
+  description?: T;
+  clinicalDose?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "benefits_select".
+ */
+export interface BenefitsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  highlight?: T;
+  icon?: T;
+  product?: T;
+  order?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents_select".
+ */
+export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences_select".
+ */
+export interface PayloadPreferencesSelect<T extends boolean = true> {
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations_select".
+ */
+export interface PayloadMigrationsSelect<T extends boolean = true> {
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * Header innstillinger for hele nettsiden
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  logo?: {
+    /**
+     * Logo tekst
+     */
+    text?: string | null;
+    /**
+     * Logo bilde (valgfritt)
+     */
+    image?: (number | null) | Media;
+  };
+  /**
+   * Hovednavigasjon i header
+   */
+  navigation?:
+    | {
+        label: string;
+        href: string;
+        /**
+         * Åpne i ny fane?
+         */
+        external?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Footer innstillinger - Admin only
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  brand?: {
+    name?: string | null;
+    description?: string | null;
+  };
+  /**
+   * Sosiale medier lenker
+   */
+  socialLinks?:
+    | {
+        platform: 'instagram' | 'facebook' | 'twitter' | 'tiktok' | 'youtube';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Footer link seksjoner (SHOP, SUPPORT, osv.)
+   */
+  linkSections?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Newsletter seksjon
+   */
+  newsletter?: {
+    title?: string | null;
+    description?: string | null;
+    placeholder?: string | null;
+    buttonText?: string | null;
+  };
+  legal?: {
+    /**
+     * Copyright tekst
+     */
+    copyrightText?: string | null;
+    /**
+     * Legal disclaimer
+     */
+    disclaimer?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  logo?:
+    | T
+    | {
+        text?: T;
+        image?: T;
+      };
+  navigation?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        external?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  linkSections?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  newsletter?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        placeholder?: T;
+        buttonText?: T;
+      };
+  legal?:
+    | T
+    | {
+        copyrightText?: T;
+        disclaimer?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

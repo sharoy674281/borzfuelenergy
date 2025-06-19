@@ -1,59 +1,82 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
-import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
+// BorzFuel Homepage - App Router version
 
-import config from '@/payload.config'
-import './styles.css'
+// Import API utilities
+import { getProducts, getBenefits, getIngredients, Product, Benefit, Ingredient } from './lib/api'
+
+// Import komponenter (du må lage/flytte disse)
+import { Header } from './components/Header'
+import { Footer } from './components/Footer'
+import { HeroSection } from './components/HeroSection'
+import { BuySection } from './components/BuySection'
+import { ProductBenefits } from './components/ProductBenefits'
+import { Ingredients } from './components/Ingredients'
+import { Testimonials } from './components/Testimonials'
+import { AboutSection } from './components/AboutSection'
+import { CartSidebar } from './components/CartSidebar'
+import { LoginModal } from './components/LoginModal'
 
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
+  // I App Router kan vi fetch direkte i server component
+  try {
+    // Hent data fra alle collections parallelt
+    const [products, benefits, ingredients] = await Promise.all([
+      getProducts(),
+      getBenefits(),
+      getIngredients(),
+    ])
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+    // Bruk første produkt som featured product
+    const featuredProduct = products[0] || null
 
-  return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
+    return (
+      <>
+        <Header />
+
+        {/* Hero - hardkodet siden det endres sjelden */}
+        <HeroSection product={featuredProduct} />
+
+        {/* Buy Section - bruker ekte produktdata fra Payload */}
+
+        {/* Benefits - bruker ekte data fra Benefits collection */}
+        <ProductBenefits benefits={benefits} />
+        {/* Testimonials - hardkodet siden det endres sjelden */}
+        <Testimonials />
+
+        {/* Ingredients - bruker ekte data fra Ingredients collection */}
+        <Ingredients ingredients={ingredients} />
+        <AboutSection />
+        {featuredProduct && <BuySection product={featuredProduct} />}
+
+        <Footer />
+
+        {/* Cart Sidebar */}
+        <CartSidebar />
+      </>
+    )
+  } catch (error) {
+    console.error('Error loading homepage:', error)
+
+    // Fallback UI hvis noe går galt
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">BorzFuel</h1>
+          <p className="text-gray-400 mb-8">Loading content...</p>
           <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
+            href="/admin"
+            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold transition-colors"
           >
-            Go to admin panel
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
+            Go to Admin Panel
           </a>
         </div>
       </div>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
-        </a>
-      </div>
-    </div>
-  )
+    )
+  }
+}
+
+// Metadata for SEO
+export const metadata = {
+  title: 'BorzFuel - Premium Pre-Workout Supplement',
+  description:
+    'Unleash the Borz in you with our science-backed pre-workout formula. Clinical doses, no fillers, explosive energy.',
 }
